@@ -496,9 +496,9 @@ class LadderAE():
         # Define the g function
         if not is_conv:
             z_lat = z_lat.flatten(2)
-        bi = lambda inits, name: self.bias(inits * np.ones(num_filters),
+        bi = lambda inits, name: self.bias(inits * np.ones(int(num_filters)),
                                            gen_id(name), for_conv=is_conv)
-        wi = lambda inits, name: self.weight(inits * np.ones(num_filters),
+        wi = lambda inits, name: self.weight(inits * np.ones(int(num_filters)),
                                              gen_id(name), for_conv=is_conv)
 
         if g_type == '':

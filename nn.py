@@ -1,6 +1,7 @@
 from collections import OrderedDict
 import logging
 
+import scipy.sparse
 import scipy
 import numpy as np
 from theano import tensor
@@ -50,7 +51,10 @@ class ZCA(object):
 
         bias = self.filter_bias * scipy.sparse.identity(m, 'float32')
         cov = np.cov(data, rowvar=0, bias=1) + bias
-        eigs, eigv = scipy.linalg.eigh(cov)
+        #eigs, eigv = scipy.linalg.eigh(cov)
+        eigs, eigv = np.linalg.eig(cov)
+        eigs = np.array(eigs)
+        eigv = np.array(eigv)
 
         assert not np.isnan(eigs).any()
         assert not np.isnan(eigv).any()
@@ -278,7 +282,7 @@ def global_meanpool_2d(x, num_filters):
     return mean, (num_filters, 1, 1)
 
 
-def pool_2d(x, mode="average", ws=(2, 2), stride=(2, 2)):
+def _pool_2d(x, mode="average", ws=(2, 2), stride=(2, 2)):
     import theano.sandbox.cuda as cuda
     assert cuda.dnn.dnn_available()
     return cuda.dnn.dnn_pool(x, ws=ws, stride=stride, mode=mode)
